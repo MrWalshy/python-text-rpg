@@ -1,43 +1,10 @@
 # Text RPG
 import time
 from Modules.Player import Player
+from Modules.Map import MapTile
+from Modules.menuFunctions import *
 
 # Functions
-def printMenu():
-    ''' Prints the menu '''
-    print("-----------------------")
-    print("|Play              [P]|")
-    print("|Load              [L]|")
-    print("|Help              [H]|")
-    print("|Exit              [E]|")
-    print("-----------------------")
-
-        
-
-def executeMenuInput():
-    exitVar = False
-    userInput = ""
-
-    while not(exitVar):
-        userInput = input("Menu Command: ")
-        userInput = userInput.lower()
-
-        if userInput == 'p':
-            gameloop()
-            pass
-        elif userInput == 'h':
-            pass
-        elif userInput == 'e':
-            print("Exiting...")
-            time.sleep(3)
-            exitVar = True
-        else:
-            print("Please enter a valid input!")
-
-def menuSequence():
-    printMenu()
-    executeMenuInput()
-
 def playerCreation():
     '''Function handles creation of the player, returning player selected
        options. The methods of choosing race & class are very similar, I should
@@ -48,8 +15,10 @@ def playerCreation():
     classes = ["Warrior", "Archer", "Mage"]
 
     ## Welcome and choose name ##
-    print("Welcome to Bretok!\n")
-    name = input("What is your name traveller?\n")
+    print("\n###############################")
+    print("# Welcome to Bretok!          #")
+    print("###############################")
+    name = input("What is your name traveller? ")
     print("A soldiers name, yes! You,", name, "will save us from the darkness!\n")
 
     ## Choose race ##
@@ -101,16 +70,43 @@ def gameloop():
     currentPlayer.description()
 
     # Create the map
+    algorForest = MapTile("Forest of Algor", currentPlayer.mapPosition, {"map2": [3, 6]})
 
     # Enter loop
     while not(exitGameLoop):
-        # Get user position on map
-        exitGameLoop = True
+        # Get user position on map, then update the map
+        playerPosition = currentPlayer.mapPosition
+        print("You are currently at location:", playerPosition)
 
         # Tell user what they can see
 
         # Get user input on what to do next
+        userInput = input("--> ")
+
+        if userInput == "north":
+            if currentPlayer.moveNorth(algorForest.baseMap):
+                algorForest.playerPosition = currentPlayer.mapPosition
+        elif userInput == "south":
+            if currentPlayer.moveSouth(algorForest.baseMap):
+                algorForest.playerPosition = currentPlayer.mapPosition
+        elif userInput == "east":
+            if currentPlayer.moveEast(algorForest.baseMap):
+                algorForest.playerPosition = currentPlayer.mapPosition
+        elif userInput == "west":
+            if currentPlayer.moveWest(algorForest.baseMap):
+                algorForest.playerPosition = currentPlayer.mapPosition
+            
 
 ### GAME START ###
-# Deploy the menu
-menuSequence()
+# Create the menu - pass in menu items
+menuItems = ["Play", "Load", "Help", "Exit"]
+menu = menuCreationSequence(menuItems)
+
+# Start main loop - iterates over the menu
+exitCondition = False
+
+while exitCondition == False:
+    printMenu(menu)
+    if getAndExecuteMenuInput(gameloop):
+        # If True is returned, the exit condition has been met
+        exitCondition = True

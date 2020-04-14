@@ -6,6 +6,10 @@
 # Todos
 - Documentation (Document the code)
 - Brainstorm ideas
-- Map
 - Fight sequence
 - Modulise the race and class selectors in playerCreation()
+
+# Doing
+- Map
+- Player class
+- Menu - Currently builds a menu, implement a command builder
