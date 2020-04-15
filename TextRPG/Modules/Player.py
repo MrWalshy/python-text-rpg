@@ -1,4 +1,3 @@
-# Classes
 class Player():
     ''' Player base class.'''
     def __init__(self, name="Degon", race="Elf", playerClass="Mage"):
@@ -7,7 +6,11 @@ class Player():
         self.playerClass = playerClass
         self.health = 100
         self.mapPosition = [1, 1]
-        self.currentMap = "Forest of Algor"
+        self.currentMap = [0, "Forest of Algor"]
+        self.inventory = {
+            "gold": 10,
+            "potion": 10
+            }
 
     def __del__(self):
         print(self.name, "has died!\n")
@@ -18,6 +21,8 @@ class Player():
         print("Player Class:", self.playerClass)
         print("Health:", self.health)
         print("Map Position:", self.mapPosition)
+        print("Current Map:", self.currentMap)
+        print("Inventory:", self.inventory)
 
     def reduceHealth(self, amount):
         self.health = self.health - amount
@@ -27,6 +32,17 @@ class Player():
 
     def setPosition(self, x, y):
         self.mapPosition = [x, y]
+
+    def printCurrentMap(self, mapList):
+        mapIndex, mapName = self.currentMap
+        print("\n###############################")
+        print("# " + mapName + "            #")
+        print("###############################")
+        for row in range(len(mapList[mapIndex].baseMap)):
+            print(mapList[mapIndex].baseMap[row])
+
+    def changeMap(self, mapToGoName):
+        self.currentMap = mapToGoName
 
     def moveNorth(self, currentMap):
         ''' Move north unless a 1(wall) is encountered. '''
@@ -79,3 +95,24 @@ class Player():
         else:
             print("Sorry, a wall is in the way")
             return False
+
+    def addToInv(self, item, amount):
+        if item in self.inventory:
+            self.inventory[item] += amount
+        else:
+            self.inventory[item] = amount
+
+    def removeFromInv(self, item, amount):
+        try:
+            if item in self.inventory:
+                if (self.inventory[item] - amount) < 0:
+                    raise
+                else:
+                    self.inventory[item] -= amount
+            else:
+                print("Item does not exist!")
+        except:
+            print("Not enough of item to do this!")
+
+        if self.inventory[item] == 0:
+            del self.inventory[item]

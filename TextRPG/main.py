@@ -1,5 +1,6 @@
 # Text RPG
 import time
+import csv
 from Modules.Player import Player
 from Modules.Map import MapTile
 from Modules.menuFunctions import *
@@ -57,12 +58,31 @@ def playerCreation():
 
     return (name, races[race], classes[playerClass])
 
+def checkForEvent(currentMap, playerPosition):
+    for event, values in currentMap.events.items():
+            if values[1] == playerPosition:
+                with open('events.txt', 'r') as csv_file:
+                    csvReader = csv.reader(csv_file, delimiter=',')
+                    lineCount = 0
+
+                    for row in csvReader:
+                        try:
+                            if lineCount == 0:
+                                lineCount += 1
+                                continue
+                            elif row[0] == event:
+                                return row
+                        except:
+                            pass
+    return False
+
 def gameloop():
     ''' Does what it says on the tin, ensures the wheels keep turning, yada yada...
         Keeps the game running until an exit condition is met.
     '''
     exitGameLoop = False
     userInput = ""
+    mapList = []
 
     # Create the player - Players state is held as long as the gameloop() func runs
     playerCredentials = playerCreation()
@@ -71,14 +91,24 @@ def gameloop():
 
     # Create the map
     algorForest = MapTile("Forest of Algor", currentPlayer.mapPosition, {"map2": [3, 6]})
+    algorForest.addEvent("welcome", "One time event to welcome player", [1,1])
+    algorForest.addEvent("gold20","Free gold for new player",[1,2])
+
+    # Create list of maps
+    mapList.append(algorForest)
 
     # Enter loop
     while not(exitGameLoop):
         # Get user position on map, then update the map
         playerPosition = currentPlayer.mapPosition
+        currentPlayer.printCurrentMap(mapList)
         print("You are currently at location:", playerPosition)
 
-        # Tell user what they can see
+        # Tell user what they can see, if event is found at current position.
+        # Run the event, get event values from a file
+        event = checkForEvent(algorForest, playerPosition)
+        if event:
+            print(event)
 
         # Get user input on what to do next
         userInput = input("--> ")
@@ -95,6 +125,8 @@ def gameloop():
         elif userInput == "west":
             if currentPlayer.moveWest(algorForest.baseMap):
                 algorForest.playerPosition = currentPlayer.mapPosition
+
+        time.sleep(2)
             
 
 ### GAME START ###

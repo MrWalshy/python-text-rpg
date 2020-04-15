@@ -1,0 +1,4 @@
+eventName,eventText,rewards,rewardAmount,enemies
+welcome,Welcome to Algor Forest <playerName>. Here is a silver sword - good luck!,silver-sword,1,none
+gold20,Have some gold - on us!,gold,20,none
+

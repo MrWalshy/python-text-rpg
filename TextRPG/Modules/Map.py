@@ -1,5 +1,5 @@
 class MapTile():
-    ''' Base map tile class.
+    ''' Base map tile class. Creates a tile of tiles.
         Arg 'name' takes a string
         Arg 'currentPlayerPosition' takes a list of a single coord set
         Arg 'mapConnections' takes a dict of 'map_name': [coords_on_map]
@@ -10,12 +10,13 @@ class MapTile():
                         [1, 0, 0, 0, 0, 0, 9, 1],
                         [1, 0, 0, 0, 0, 0, 0, 1],
                         [1, 0, 0, 0, 0, 0, 0, 1],
-                        [1, 0, 0, 0, 0, 0, 0, 1],
-                        [1, 0, 9, 0, 0, 0, 0, 1],
-                        [1, 0, 0, 0, 0, 9, 0, 1],
+                        [1, 0, 0, 1, 1, 1, 0, 1],
+                        [1, 0, 0, 1, 0, 1, 0, 1],
+                        [1, 0, 0, 0, 0, 1, 0, 1],
                         [1, 1, 1, 1, 1, 1, 1, 1]]
         self.mapConnections = mapConnections
         self.playerPosition = currentPlayerPosition # None if not not on this map
+        self.events = {}
 
     def printMap(self):
         ''' Iterates over rows in the map, printing each row. '''
@@ -32,5 +33,16 @@ class MapTile():
             Takes a value to change the selected element to.
         '''
         self.baseMap[row][column] = value
+
+    def printEvents(self):
+        try:
+            for key, value in self.events.items():
+                print(key + " is at " + str(value[1][0]) + "," + str(value[1][1]), end="\n")
+                print("- " + value[0])
+        except:
+            print("No events found!")
+
+    def addEvent(self, eventName, eventDescription, eventCoords):
+        self.events[eventName] = [eventDescription, eventCoords]
         
         
