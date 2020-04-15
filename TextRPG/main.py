@@ -86,47 +86,65 @@ def gameloop():
 
     # Create the player - Players state is held as long as the gameloop() func runs
     playerCredentials = playerCreation()
-    currentPlayer = Player(*playerCredentials)
-    currentPlayer.description()
+    player = Player(*playerCredentials)
+    player.description()
 
     # Create the map
-    algorForest = MapTile("Forest of Algor", currentPlayer.mapPosition, {"map2": [3, 6]})
-    algorForest.addEvent("welcome", "One time event to welcome player", [1,1])
-    algorForest.addEvent("gold20","Free gold for new player",[1,2])
+    algorForest = MapTile("Forest of Algor", player.mapPosition, {"Dalor Bay": [3, 7]})
+    algorForest.addEvent("welcome", "One time event to welcome player", [1, 1])
+    algorForest.addEvent("gold20","Free gold for new player",[1, 2])
+
+    dalorBay = MapTile("Dalor Bay", player.mapPosition, {"Forest of Algor": [3, 0]})
 
     # Create list of maps
     mapList.append(algorForest)
+    mapList.append(dalorBay)
 
     # Enter loop
     while not(exitGameLoop):
         # Get user position on map, then update the map
-        playerPosition = currentPlayer.mapPosition
-        currentPlayer.printCurrentMap(mapList)
+        playerPosition = player.mapPosition
+        player.printCurrentMap(mapList)
         print("You are currently at location:", playerPosition)
+        currentMap = mapList[player.currentMap[0]]
 
         # Tell user what they can see, if event is found at current position.
         # Run the event, get event values from a file
-        event = checkForEvent(algorForest, playerPosition)
+        event = checkForEvent(currentMap, playerPosition)
         if event:
-            print(event)
+##            print(event)
+            pass
 
         # Get user input on what to do next
         userInput = input("--> ")
-
+        # Execute input
         if userInput == "north":
-            if currentPlayer.moveNorth(algorForest.baseMap):
-                algorForest.playerPosition = currentPlayer.mapPosition
+            if player.moveNorth(currentMap.baseMap):
+                currentMap.playerPosition = player.mapPosition
         elif userInput == "south":
-            if currentPlayer.moveSouth(algorForest.baseMap):
-                algorForest.playerPosition = currentPlayer.mapPosition
+            if player.moveSouth(currentMap.baseMap):
+                currentMap.playerPosition = player.mapPosition
         elif userInput == "east":
-            if currentPlayer.moveEast(algorForest.baseMap):
-                algorForest.playerPosition = currentPlayer.mapPosition
+            if player.moveEast(currentMap.baseMap):
+                currentMap.playerPosition = player.mapPosition
         elif userInput == "west":
-            if currentPlayer.moveWest(algorForest.baseMap):
-                algorForest.playerPosition = currentPlayer.mapPosition
+            if player.moveWest(currentMap.baseMap):
+                currentMap.playerPosition = player.mapPosition
+        playerPosition = player.mapPosition
 
-        time.sleep(2)
+        # Change map if on connecting tile
+        for connectingMapName, coords in currentMap.mapConnections.items():
+            if playerPosition == coords:
+                if connectingMapName == "Dalor Bay":
+                    print(connectingMapName, coords)
+                    player.changeMap(1, connectingMapName)
+                    player.mapPosition = [3, 0]
+                elif connectingMapName == "Forest of Algor":
+                    player.changeMap(0, connectingMapName)
+                    player.mapPosition = [3, 7]
+                
+
+        time.sleep(0)
             
 
 ### GAME START ###

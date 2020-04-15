@@ -41,8 +41,8 @@ class Player():
         for row in range(len(mapList[mapIndex].baseMap)):
             print(mapList[mapIndex].baseMap[row])
 
-    def changeMap(self, mapToGoName):
-        self.currentMap = mapToGoName
+    def changeMap(self, mapIndex, mapName):
+        self.currentMap = [mapIndex, mapName]
 
     def moveNorth(self, currentMap):
         ''' Move north unless a 1(wall) is encountered. '''
