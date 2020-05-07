@@ -24,6 +24,9 @@ class Player():
         print("Current Map:", self.currentMap)
         print("Inventory:", self.inventory)
 
+    def show_inventory(self):
+        print("Inventory:", self.inventory)
+
     def reduceHealth(self, amount):
         self.health = self.health - amount
 

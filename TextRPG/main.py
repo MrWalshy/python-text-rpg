@@ -27,7 +27,10 @@ def playerCreation():
     print("What race would you like to be?")
     # Prints list of races to choose from
     for race in range(len(races)):
-        print("|", race, "|", races[race], end="\n")
+        raceString = "| {} | {}".format(race, races[race])
+        # print("|", race, "|", races[race], end="\n")
+        print(raceString, end="\n")
+
     # Conditional check to ensure race entered is int in range of races
     while exitRace == False:
         try:
@@ -60,6 +63,7 @@ def playerCreation():
 
 def checkForEvent(currentMap, playerPosition):
     for event, values in currentMap.events.items():
+            # If player is at event coordinates
             if values[1] == playerPosition:
                 with open('events.txt', 'r') as csv_file:
                     csvReader = csv.reader(csv_file, delimiter=',')
@@ -93,6 +97,7 @@ def gameloop():
     algorForest = MapTile("Forest of Algor", player.mapPosition, {"Dalor Bay": [3, 7]})
     algorForest.addEvent("welcome", "One time event to welcome player", [1, 1])
     algorForest.addEvent("gold20","Free gold for new player",[1, 2])
+    algorForest.modifyMap(3, 0, 1)
 
     dalorBay = MapTile("Dalor Bay", player.mapPosition, {"Forest of Algor": [3, 0]})
 
@@ -103,7 +108,7 @@ def gameloop():
     # Enter loop
     while not(exitGameLoop):
         # Get user position on map, then update the map
-        playerPosition = player.mapPosition
+        playerPosition = player.mapPosition # returned as a list [x,y]
         player.printCurrentMap(mapList)
         print("You are currently at location:", playerPosition)
         currentMap = mapList[player.currentMap[0]]
@@ -112,8 +117,9 @@ def gameloop():
         # Run the event, get event values from a file
         event = checkForEvent(currentMap, playerPosition)
         if event:
-##            print(event)
-            pass
+           print(event[1])
+           currentMap.removeEvent(event[0])
+        pass
 
         # Get user input on what to do next
         userInput = input("--> ")
@@ -130,18 +136,23 @@ def gameloop():
         elif userInput == "west":
             if player.moveWest(currentMap.baseMap):
                 currentMap.playerPosition = player.mapPosition
+        elif userInput == "inv" or userInput == "i":
+            print("\n" * 10)
+            player.show_inventory()
+            time.sleep(3)
+
         playerPosition = player.mapPosition
 
         # Change map if on connecting tile
         for connectingMapName, coords in currentMap.mapConnections.items():
             if playerPosition == coords:
                 if connectingMapName == "Dalor Bay":
-                    print(connectingMapName, coords)
+                    #print(connectingMapName, coords)
                     player.changeMap(1, connectingMapName)
-                    player.mapPosition = [3, 0]
+                    player.mapPosition = [3, 1]
                 elif connectingMapName == "Forest of Algor":
                     player.changeMap(0, connectingMapName)
-                    player.mapPosition = [3, 7]
+                    player.mapPosition = [3, 6]
                 
 
         time.sleep(0)

@@ -15,8 +15,12 @@
 - Brainstorm ideas
 - Fight sequence
 - Modulise the race and class selectors in playerCreation()
+- Event system
 
 # Doing
+- Menu - Currently builds a menu, implement a command builder
+
+# Good enough for now
 - Map
 - Player class
-- Menu - Currently builds a menu, implement a command builder
+- Travel/Movement

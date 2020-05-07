@@ -44,5 +44,8 @@ class MapTile():
 
     def addEvent(self, eventName, eventDescription, eventCoords):
         self.events[eventName] = [eventDescription, eventCoords]
+
+    def removeEvent(self, eventName):
+        self.events.pop(eventName)
         
         
